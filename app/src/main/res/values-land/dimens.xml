@@ -1,0 +1,13 @@
+<resources>
+    <dimen name="fab_margin">16dp</dimen>
+
+    <dimen name="activity_margin">16dp</dimen>
+
+    <dimen name="paddingItemDecorationDefault">8dp</dimen>
+    <dimen name="paddingItemDecorationEdge">24dp</dimen>
+
+    <dimen name="activity_margin_content">24dp</dimen>
+    <dimen name="news_image_height">150dp</dimen>
+    <dimen name="activity_margin_half">8dp</dimen>
+    <dimen name="news_header_text_size">20sp</dimen>
+</resources>

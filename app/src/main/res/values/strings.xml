@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">NewsFeed</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="all_stories_title"> All Stories</string>
+    <string name="news_default_label">News</string>
+</resources>
