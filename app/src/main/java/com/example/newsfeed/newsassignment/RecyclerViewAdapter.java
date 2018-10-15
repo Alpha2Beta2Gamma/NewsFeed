@@ -22,7 +22,7 @@ import com.example.newsfeed.newsassignment.model.Result;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements RecyclerViewItemClickListener {
+public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private static final int NEWS_ITEM = 0;
     private static final String TAG = "RecyclerViewAdapter";
@@ -156,10 +156,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    @Override
-    public void onItemClick(View view, int position) {
-
-    }
 
 
 }
