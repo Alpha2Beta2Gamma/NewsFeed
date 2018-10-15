@@ -12,7 +12,7 @@ import android.view.View;
 
 /**
  * This is the main activity for this application.
- * This activity holds two fragments, one is the main list items and other is the detailed screnn that appearn upon news item click.
+ * This activity holds two fragments, one is the main list items and other is the detailed screen that appearn upon news item click.
  */
 public class MainActivity extends AppCompatActivity implements MainFragment.showDetailsListener {
 
