@@ -13,26 +13,23 @@ import android.webkit.WebViewClient;
 public class DetailedItemFragment extends Fragment {
 
     public static final String FRAGMENT_TAG = "DetailedItemFragment";
-    private View thisView;
     public static final String Url = "URI";
     private WebView wv;
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        thisView = getLayoutInflater().inflate(R.layout.detailed_view, container, false);
-        String url = getArguments().getString("URI");
+        View thisView = getLayoutInflater().inflate(R.layout.detailed_view, container, false);
+        String url = null;
+        Bundle args = getArguments();
+        if (args != null) {
+            url = args.getString(Url);
+        }
 
         //Call<Response> res = NewsRestAPI.getClient().create(NewsService.class).getDetailedItem(url);
-        wv = (WebView) thisView.findViewById(R.id.detailed_web_view);
+        wv = thisView.findViewById(R.id.detailed_web_view);
 
         wv.setWebViewClient(new MyBrowser());
         wv.getSettings().setLoadsImagesAutomatically(true);
@@ -43,11 +40,6 @@ public class DetailedItemFragment extends Fragment {
             wv.loadUrl(url);
         }
         return thisView;
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     private static class MyBrowser extends WebViewClient {

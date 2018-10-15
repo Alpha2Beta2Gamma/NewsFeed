@@ -18,7 +18,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.example.newsfeed.newsassignment.model.Content;
 import com.example.newsfeed.newsassignment.model.Result;
-import com.example.newsfeed.newsassignment.model.Result;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +25,12 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements RecyclerViewItemClickListener {
 
     private static final int NEWS_ITEM = 0;
-    public static final String TAG = "RecyclerViewAdapter";
+    private static final String TAG = "RecyclerViewAdapter";
 
-    private List<Result> newsResult;
-    private Context context;
+    private final List<Result> newsResult;
+    private final Context context;
 
-    private RecyclerViewItemClickListener itemClickListener;
+    private final RecyclerViewItemClickListener itemClickListener;
 
     public RecyclerViewAdapter(Context context, RecyclerViewItemClickListener itemClickListener) {
         this.context = context;
@@ -40,13 +39,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        RecyclerView.ViewHolder viewHolder = null;
-        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        viewHolder = getViewHolder(parent, inflater);
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        return viewHolder;
+        return getViewHolder(parent, LayoutInflater.from(parent.getContext()));
     }
 
     @NonNull
@@ -58,7 +55,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
 
         try {
             Result result = newsResult.get(position); // Movie
@@ -70,9 +67,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             newsViewHolder.mnewsTitle.setText(content.getTitle());
 
 
-            /**
+            /*
              * Using Glide to handle image loading.
-             * GLide will automaticaly cache necessary sized images.
+             * Glide automatically caches necessary sized images.
              */
             Glide
                     .with(context)
@@ -105,7 +102,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemCount() {
-        return newsResult == null ? 0 : newsResult.size();
+        return newsResult.size();
     }
 
     @Override
@@ -133,27 +130,23 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public boolean isEmpty() {
-        return getItemCount() == 0;
-    }
 
-
-    public Result getItem(int position) {
+    private Result getItem(int position) {
         return newsResult.get(position);
     }
 
 
-    protected class NewsViewHolder extends RecyclerView.ViewHolder {
-        private TextView mnewsTitle;
-        private ImageView mnewsImg;
-        private ProgressBar mProgress;
+    class NewsViewHolder extends RecyclerView.ViewHolder {
+        private final TextView mnewsTitle;
+        private final ImageView mnewsImg;
+        private final ProgressBar mProgress;
 
-        public NewsViewHolder(View itemView) {
+        NewsViewHolder(View itemView) {
             super(itemView);
 
-            mnewsTitle = (TextView) itemView.findViewById(R.id.news_title);
-            mnewsImg = (ImageView) itemView.findViewById(R.id.news_image);
-            mProgress = (ProgressBar) itemView.findViewById(R.id.movie_progress);
+            mnewsTitle = itemView.findViewById(R.id.news_title);
+            mnewsImg = itemView.findViewById(R.id.news_image);
+            mProgress = itemView.findViewById(R.id.movie_progress);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

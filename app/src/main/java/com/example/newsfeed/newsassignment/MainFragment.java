@@ -1,8 +1,6 @@
 package com.example.newsfeed.newsassignment;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -20,7 +18,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.newsfeed.newsassignment.app.ConnectivityReceiver;
 import com.example.newsfeed.newsassignment.app.NewsFeedApplication;
 import com.example.newsfeed.newsassignment.model.News;
 import com.example.newsfeed.newsassignment.model.Result;
@@ -30,7 +27,6 @@ import java.util.List;
 import com.example.newsfeed.newsassignment.api.NewsService;
 import com.example.newsfeed.newsassignment.app.ConnectivityReceiver;
 
-import okhttp3.Cache;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -41,12 +37,13 @@ import retrofit2.Response;
 public class MainFragment extends Fragment implements RecyclerViewItemClickListener, ConnectivityReceiver.ConnectivityReceiverListener {
 
     public static final String FRAGMENT_TAG = "MainFragment";
+    private static final String TAG = "MainFragment";
 
-    RecyclerViewAdapter adapter;
-    LinearLayoutManager linearLayoutManager;
+    private RecyclerViewAdapter adapter;
+    private LinearLayoutManager linearLayoutManager;
 
-    RecyclerView rv;
-    ProgressBar progressBar;
+    private RecyclerView rv;
+    private ProgressBar progressBar;
 
     private List<Result> displayResults;
 
@@ -56,13 +53,13 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
     private boolean finishedLoadingItems;
     private boolean isLoading;
 
-    TextView connectivityStatus;
+    private TextView connectivityStatus;
 
 
     /**
      * Time interval to re-query the response in case of a failure.
      */
-    static final int RETRY_TIME = 120000; // 2 mins
+    private static final int RETRY_TIME = 120000; // 2 minutes
 
     private NewsService newsService;
 
@@ -87,8 +84,6 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
 
     }
 
-    private View thisView;
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +93,7 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
 
         newsService = NewsFeedApplication.getClient().create(NewsService.class);
 
-        /**
+        /*
          *Display results are checked here to handle screen rotations. Since the fragment is retained over screen rotation, these
          * variables will also be retained on screen rotation.
          */
@@ -129,10 +124,10 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        thisView = getLayoutInflater().inflate(R.layout.fragment_main, container, false);
+        View thisView = getLayoutInflater().inflate(R.layout.fragment_main, container, false);
 
-        rv = (RecyclerView) thisView.findViewById(R.id.main_recycler);
-        progressBar = (ProgressBar) thisView.findViewById(R.id.main_progress);
+        rv = thisView.findViewById(R.id.main_recycler);
+        progressBar = thisView.findViewById(R.id.main_progress);
 
         setRetainInstance(true);
 
@@ -143,8 +138,8 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
         rv.setAdapter(adapter);
 
 
-        /**
-         * Check for existing results because they will be still existing in case of a screen rotation(OnCreateView will be caled but
+        /*
+         * Check for existing results because they will be still existing in case of a screen rotation(OnCreateView will be called but
          * OnCreate will not be called)
          */
         if (displayResults == null || displayResults.size() == 0) {
@@ -164,8 +159,8 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
         return thisView;
     }
 
-    /**
-     * Requery API response in case of failure.
+    /*
+     * Re-query API response in case of failure.
      */
     private void retry()
 
@@ -189,7 +184,7 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
 
     /**
      * load Items from server.
-     * TODO Improve my implemneting OKhttp cache as well as persisiten cache like database.
+     * TODO Improve my implementing OKHttp cache as well as persistent cache like database.
      *
      */
     private void loadNewsItems() {
@@ -199,7 +194,7 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
             isLoading = true;
             newsService.getNewsItems().enqueue(new Callback<News>() {
                 @Override
-                public void onResponse(Call<News> call, Response<News> response) {
+                public void onResponse(@NonNull Call<News> call, @NonNull Response<News> response) {
                     // Got data. Send it to adapter
 
                     if (response.isSuccessful()) {
@@ -222,7 +217,7 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
                 }
 
                 @Override
-                public void onFailure(Call<News> call, Throwable t) {
+                public void onFailure(@NonNull Call<News> call, @NonNull Throwable t) {
                     t.printStackTrace();
                     isLoading = false;
                     finishedLoadingItems = false;
@@ -242,13 +237,6 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
 
     }
 
-
-    @Override
-    public void onPause() {
-
-        super.onPause();
-
-    }
 
     @Override
     public void onDetach() {
@@ -278,34 +266,39 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
     }
 
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-    }
-
-    /***
+    /*
      * This takes care of the click events on recycler view items.
-     * @param view
-     * @param position
+     *
      */
     @Override
     public void onItemClick(View view, int position) {
 
-        displayResults.get(position);
         Bundle args = new Bundle();
         args.putString(DetailedItemFragment.Url, displayResults.get(position).getContent().getUrl());
         listener.showDetails(args);
     }
 
-    /**
+    /*
      * The below APIs wil help detect network availability changes.
-     * @return
+     *
      */
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        try {
+
+            if(getActivity() == null){
+
+                return  false;
+            }
+            ConnectivityManager connectivityManager
+                    = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+            if(connectivityManager == null){
+                return false;
+            }
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }catch (Exception e){
+            return false;
+        }
     }
 
 
@@ -331,6 +324,7 @@ public class MainFragment extends Fragment implements RecyclerViewItemClickListe
             }
         } catch (Exception e) {
 
+            Log.e(TAG, " Error while determining connectivity status");
         }
     }
 
